@@ -63,9 +63,12 @@ class Vector{
 		this.z = z;
 	}
 	
-	normalize(){
-		const factor = 1 / Math.sqrt(
+	magnitude(){
+		return Math.sqrt(
 			this.x * this.x + this.y * this.y + this.z * this.z);
+	}
+	
+	scalarMultiplication(factor){
 		this.x *= factor;
 		this.y *= factor;
 		this.z *= factor;
@@ -156,11 +159,16 @@ class VectorSystem{
 		this.endVector.color = "#f00";
 		this.vectors.push(this.endVector);
 		this.normal = Vector.crossProduct(this.startVector, this.endVector);
-		this.normal.normalize();
+		const magnitude = this.normal.magnitude();
+		this.normal.scalarMultiplication(1 / magnitude);
 		this.normal.color = "#0a0";
 		this.vectors.push(this.normal);
 
-		this.angle = Math.acos(Vector.dotProduct(this.startVector, this.endVector));
+		// Awful for small angles and angles close to PI.
+		//this.angle = Math.acos(Vector.dotProduct(this.startVector, this.endVector));
+		
+		this.angle = Math.atan2(magnitude, Vector.dotProduct(this.startVector, this.endVector));
+		
 		this.rotationAmount = 0;
 
 		this.animate = true;
